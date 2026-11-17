@@ -261,11 +261,17 @@ io.on('connection', (socket) => {
   });
 
   // Create Room
-  socket.on('create_room', ({ myNickname, partnerNickname }, callback) => {
+  socket.on('create_room', ({ code: customCode, myNickname, partnerNickname }, callback) => {
     try {
-      const code = generateRoomCode();
+      const code = (customCode || generateRoomCode()).trim().toUpperCase();
       const cleanMyNick = (myNickname || 'Sweetie').trim().slice(0, 15);
       const cleanPartnerNick = (partnerNickname || 'Honey').trim().slice(0, 15);
+
+      // If room already exists (e.g. from previous rounds for this couple), clear previous timer
+      if (rooms.has(code)) {
+        const oldRoom = rooms.get(code);
+        if (oldRoom && oldRoom.timerInterval) clearInterval(oldRoom.timerInterval);
+      }
 
       const room = {
         code,
@@ -387,7 +393,7 @@ io.on('connection', (socket) => {
 
       const cleanNick = (nickname || room.expectedPartnerNickname || 'Honey').trim().slice(0, 15);
 
-      if (!room.players[2] || !room.players[2].online) {
+      if (!room.players[2] || !room.players[2].online || room.players[2].nickname === cleanNick) {
         room.players[2] = {
           socketId: socket.id,
           nickname: cleanNick,

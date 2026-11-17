@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import LobbyScreen from './components/LobbyScreen';
+import CoupleAuthScreen from './components/CoupleAuthScreen';
+import CoupleHomeScreen from './components/CoupleHomeScreen';
 import GameScreen from './components/GameScreen';
 import ResultsScreen from './components/ResultsScreen';
 import { sounds } from './utils/sound';
@@ -12,6 +13,32 @@ export default function App() {
   const [mySlot, setMySlot] = useState(1);
   const [myNickname, setMyNickname] = useState('');
   const [ping, setPing] = useState(0);
+
+  // Couple permanent session
+  const [couple, setCouple] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sketch_relay_couple');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sketch_relay_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    if (currentUser?.name) {
+      setMyNickname(currentUser.name);
+      setMySlot(currentUser.slot || 1);
+    }
+  }, [currentUser]);
 
   // Full synchronized game state
   const [gameState, setGameState] = useState({
@@ -262,35 +289,65 @@ export default function App() {
     setScreen('lobby');
   };
 
+  const handleCoupleAuthenticated = ({ couple: newCouple, currentUser: newUser }) => {
+    setCouple(newCouple);
+    setCurrentUser(newUser);
+    setMyNickname(newUser.name);
+    setMySlot(newUser.slot || 1);
+    localStorage.setItem('sketch_relay_couple', JSON.stringify(newCouple));
+    localStorage.setItem('sketch_relay_user', JSON.stringify(newUser));
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('sketch_relay_couple');
+    localStorage.removeItem('sketch_relay_user');
+    sessionStorage.removeItem('sketchrelay_session');
+    setCouple(null);
+    setCurrentUser(null);
+    setRoomCode('');
+    setScreen('lobby');
+  };
+
   return (
     <div className="w-full h-full flex flex-col overflow-hidden relative font-cute select-none">
-      {screen === 'lobby' && (
-        <LobbyScreen
-          socket={socket}
-          onRoomReady={handleRoomReady}
-          ping={ping}
-        />
-      )}
+      {/* If couple is not authenticated / linked yet, show Couple Auth & Pairing */}
+      {(!couple || !couple.is_linked) ? (
+        <CoupleAuthScreen onAuthenticated={handleCoupleAuthenticated} />
+      ) : (
+        <>
+          {screen === 'lobby' && (
+            <CoupleHomeScreen
+              socket={socket}
+              couple={couple}
+              currentUser={currentUser}
+              onRoomReady={handleRoomReady}
+              onLogout={handleLogout}
+              ping={ping}
+            />
+          )}
 
-      {screen === 'game' && (
-        <GameScreen
-          socket={socket}
-          roomCode={roomCode}
-          mySlot={mySlot}
-          myNickname={myNickname}
-          gameState={gameState}
-          ping={ping}
-          onEndGame={() => setScreen('results')}
-        />
-      )}
+          {screen === 'game' && (
+            <GameScreen
+              socket={socket}
+              roomCode={roomCode}
+              mySlot={mySlot}
+              myNickname={myNickname}
+              gameState={gameState}
+              ping={ping}
+              onEndGame={() => setScreen('results')}
+            />
+          )}
 
-      {screen === 'results' && (
-        <ResultsScreen
-          resultData={resultData}
-          onPlayAgain={handlePlayAgain}
-          onGoHome={handleGoHome}
-          isHost={mySlot === 1}
-        />
+          {screen === 'results' && (
+            <ResultsScreen
+              resultData={resultData}
+              onPlayAgain={handlePlayAgain}
+              onGoHome={handleGoHome}
+              isHost={mySlot === 1}
+              coupleId={couple?.id}
+            />
+          )}
+        </>
       )}
     </div>
   );

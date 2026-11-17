@@ -1,10 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Download, RotateCcw, CheckCircle2, Share2, Heart, Sparkles, Home } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { sounds } from '../utils/sound';
+import { saveDrawingToCloud } from '../utils/supabase';
 
-export default function ResultsScreen({ resultData, onPlayAgain, onGoHome, isHost }) {
+export default function ResultsScreen({ resultData, onPlayAgain, onGoHome, isHost, coupleId }) {
   const canvasRef = useRef(null);
+  const hasSavedRef = useRef(false);
+  const [isSavedToCloud, setIsSavedToCloud] = useState(false);
 
   const { prompt, promptSteps, canvasHistory, players } = resultData || {};
   const partner1 = players?.[0]?.nickname || 'Partner 1';
@@ -54,8 +57,21 @@ export default function ResultsScreen({ resultData, onPlayAgain, onGoHome, isHos
           floodFillHelper(ctx, x, y, action.color);
         }
       });
+
+      // Automatically save finished artwork to couple scrapbook in cloud
+      if (canvasRef.current && coupleId && !hasSavedRef.current) {
+        hasSavedRef.current = true;
+        try {
+          const dataUrl = canvasRef.current.toDataURL('image/png');
+          saveDrawingToCloud(coupleId, prompt, dataUrl).then((res) => {
+            if (res) setIsSavedToCloud(true);
+          });
+        } catch (e) {
+          console.error('Failed to auto-save to cloud:', e);
+        }
+      }
     }
-  }, [canvasHistory]);
+  }, [canvasHistory, coupleId, prompt]);
 
   const handleDownload = () => {
     if (!canvasRef.current) return;
@@ -139,6 +155,14 @@ export default function ResultsScreen({ resultData, onPlayAgain, onGoHome, isHos
           <span className="text-[11px] font-bold text-rose-400 uppercase tracking-wider">Prompt:</span>
           <span className="text-xs font-bold text-white truncate ml-2">{prompt}</span>
         </div>
+
+        {/* Cloud Scrapbook Status */}
+        {isSavedToCloud && (
+          <div className="mt-1 inline-flex items-center gap-1 text-[11px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+            <span>Saved to Our Scrapbook! 🖼️</span>
+          </div>
+        )}
       </div>
 
       {/* Artwork Display */}
