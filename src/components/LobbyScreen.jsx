@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Copy, Check, ArrowRight, Palette, Heart, Wifi, Bot, Sparkles } from 'lucide-react';
+import { Copy, Check, ArrowRight, Palette, Heart, Wifi } from 'lucide-react';
 import { sounds } from '../utils/sound';
-
-const CATEGORY_TAGS = [
-  { label: 'Romantic 💕', color: 'bg-rose-500/10 text-rose-300 border-rose-500/20' },
-  { label: 'Funny 😂', color: 'bg-amber-500/10 text-amber-300 border-amber-500/20' },
-  { label: 'Food 🍕', color: 'bg-orange-500/10 text-orange-300 border-orange-500/20' },
-  { label: 'Adventure 🚀', color: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20' },
-  { label: 'Nature 🌿', color: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20' },
-];
 
 export default function LobbyScreen({ socket, onRoomReady, ping }) {
   const [tab, setTab] = useState('create');
@@ -30,10 +22,10 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
     }
   }, []);
 
-  const handleCreateRoom = (e, withBot = false) => {
+  const handleCreateRoom = (e) => {
     if (e && e.preventDefault) e.preventDefault();
     const effectiveMyNick = myNickname.trim() || 'Sweetie';
-    const effectivePartnerNick = withBot ? 'SweetBot 🤖' : (partnerNickname.trim() || 'Honey');
+    const effectivePartnerNick = partnerNickname.trim() || 'Honey';
 
     setError('');
     setIsLoading(true);
@@ -52,24 +44,10 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
           myNickname: effectiveMyNick,
           room: res.room
         });
-
-        if (withBot) {
-          socket.emit('add_bot_partner', { code: res.code });
-        } else {
-          setWaitingForPartner(true);
-        }
+        setWaitingForPartner(true);
       } else {
         setError(res?.error || 'Failed to create room. Please try again.');
       }
-    });
-  };
-
-  const handleAddBotToWaitingRoom = () => {
-    if (!generatedCode) return;
-    sounds.playPop();
-    setIsLoading(true);
-    socket.emit('add_bot_partner', { code: generatedCode }, () => {
-      setIsLoading(false);
     });
   };
 
@@ -125,16 +103,12 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
           <Wifi className={`w-3.5 h-3.5 ${ping < 100 ? 'text-emerald-400' : 'text-amber-400'}`} />
           <span>{ping > 0 ? `${ping}ms` : 'Connected'}</span>
         </div>
-        <div className="text-xs text-rose-400 font-semibold bg-rose-500/10 border border-rose-500/20 px-3 py-1 rounded-full flex items-center gap-1">
-          <Heart className="w-3 h-3 fill-rose-500 text-rose-500 animate-heartbeat" />
-          <span>500 Couple Prompts</span>
-        </div>
       </header>
 
       {/* Main Container */}
       <div className="w-full max-w-sm flex-1 flex flex-col justify-center my-auto">
         {/* Logo & Headline */}
-        <div className="text-center mb-5">
+        <div className="text-center mb-6">
           <div className="relative inline-flex items-center justify-center mb-3">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-600 via-pink-600 to-purple-600 flex items-center justify-center rose-glow">
               <Palette className="w-7 h-7 text-white" />
@@ -148,15 +122,6 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
           <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
             Two partners • One sketch • 40s per turn
           </p>
-
-          {/* Category Chips */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 mt-3">
-            {CATEGORY_TAGS.map(c => (
-              <span key={c.label} className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${c.color}`}>
-                {c.label}
-              </span>
-            ))}
-          </div>
         </div>
 
         {waitingForPartner ? (
@@ -185,17 +150,6 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
             <div className="flex items-center justify-center gap-2 py-2 text-xs text-rose-400 font-medium">
               <div className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
               <span>Waiting for partner to join...</span>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-slate-800">
-              <button
-                onClick={handleAddBotToWaitingRoom}
-                disabled={isLoading}
-                className="w-full btn-couple-secondary py-2 text-xs font-semibold"
-              >
-                <Bot className="w-3.5 h-3.5" />
-                <span>Play with SweetBot 🤖</span>
-              </button>
             </div>
           </div>
         ) : (
@@ -233,7 +187,7 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
             )}
 
             {tab === 'create' ? (
-              <form onSubmit={(e) => handleCreateRoom(e, false)} className="space-y-3.5">
+              <form onSubmit={handleCreateRoom} className="space-y-3.5">
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1">
                     Your Nickname 🐻
@@ -265,20 +219,10 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full btn-couple-primary py-2.5 text-xs font-bold mt-1"
+                  className="w-full btn-couple-primary py-2.5 text-xs font-bold mt-2"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
                   <span>{isLoading ? 'Creating Room...' : 'Start Couple Relay 💕'}</span>
                   <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleCreateRoom(null, true)}
-                  className="w-full btn-couple-secondary py-2 text-xs font-semibold mt-1"
-                >
-                  <Bot className="w-3.5 h-3.5" />
-                  <span>Solo Practice (with Bot) 🤖</span>
                 </button>
               </form>
             ) : (
@@ -314,7 +258,7 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full btn-couple-primary py-2.5 text-xs font-bold mt-1"
+                  className="w-full btn-couple-primary py-2.5 text-xs font-bold mt-2"
                 >
                   <Heart className="w-3.5 h-3.5 fill-white" />
                   <span>{isLoading ? 'Connecting...' : 'Join Partner 💕'}</span>
@@ -327,7 +271,7 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
       </div>
 
       <footer className="text-center py-2 text-[11px] text-slate-500 font-medium">
-        Made with 💕 for couples • 500 prompts • 40s per turn
+        Sketch Relay 💕 2-Player Drawing Game
       </footer>
     </div>
   );
