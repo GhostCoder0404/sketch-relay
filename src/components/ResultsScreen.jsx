@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { Download, RotateCcw, CheckCircle2, Share2, Heart, Sparkles } from 'lucide-react';
+import { Download, RotateCcw, CheckCircle2, Share2, Heart, Sparkles, Home } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { sounds } from '../utils/sound';
 
-export default function ResultsScreen({ resultData, onPlayAgain, isHost }) {
+export default function ResultsScreen({ resultData, onPlayAgain, onGoHome, isHost }) {
   const canvasRef = useRef(null);
 
   const { prompt, promptSteps, canvasHistory, players } = resultData || {};
@@ -197,6 +197,14 @@ export default function ResultsScreen({ resultData, onPlayAgain, isHost }) {
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Play Again! (New Prompt) 🎨</span>
+        </button>
+
+        <button
+          onClick={() => { sounds.playPop(); onGoHome && onGoHome(); }}
+          className="w-full btn-couple-secondary py-2 text-xs font-semibold text-slate-300 hover:text-white"
+        >
+          <Home className="w-3.5 h-3.5 text-rose-400" />
+          <span>Homepage 🏠</span>
         </button>
       </div>
     </div>

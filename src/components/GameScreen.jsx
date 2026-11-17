@@ -64,6 +64,7 @@ export default function GameScreen({
   const chatScrollRef = useRef(null);
 
   const [showStepsModal, setShowStepsModal] = useState(false);
+  const [turnBanner, setTurnBanner] = useState(null);
 
   const currentTurn = gameState.currentTurn || 1;
   const totalTurns = gameState.totalTurns || 6;
@@ -87,12 +88,23 @@ export default function GameScreen({
     }
   }, [timeLeft, isPaused]);
 
-  // Sound and state resets on turn change
+  // Sound, state resets, and canvas turn notification banner on turn change
   useEffect(() => {
     sounds.playTurnChange();
     redoStackRef.current = [];
     setRedoAvailable(false);
     setIsSkipping(false);
+
+    const isMine = mySlot === activeSlot;
+    const bannerTitle = isMine ? 'Your Turn to Sketch! ✏️' : `${partnerNickname}'s Turn! 👀`;
+    const bannerSubtitle = currentStep || `Turn ${currentTurn} of ${totalTurns}`;
+
+    setTurnBanner({ isMine, title: bannerTitle, subtitle: bannerSubtitle });
+    const timer = setTimeout(() => {
+      setTurnBanner(null);
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, [currentTurn]);
 
   // Canvas setup
@@ -484,6 +496,27 @@ export default function GameScreen({
               isMyTurn && !isPaused ? 'cursor-crosshair' : 'cursor-not-allowed pointer-events-none'
             }`}
           />
+
+          {/* Turn Handover Popup Banner (Over Canvas) */}
+          {turnBanner && (
+            <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none z-30 animate-fade-in">
+              <div className={`px-4 py-3 rounded-2xl shadow-2xl border text-center backdrop-blur-md transition-all max-w-[280px] ${
+                turnBanner.isMine
+                  ? 'bg-rose-950/90 border-rose-500/60 text-white rose-glow ring-2 ring-rose-500/40'
+                  : 'bg-slate-900/90 border-slate-700 text-white shadow-black/80'
+              }`}>
+                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full mb-1 bg-white/10 text-base">
+                  {turnBanner.isMine ? '✏️' : '👀'}
+                </div>
+                <h3 className="text-xs font-extrabold tracking-tight">
+                  {turnBanner.title}
+                </h3>
+                <p className="text-[10px] font-medium text-slate-300 mt-0.5 line-clamp-2 leading-snug">
+                  {turnBanner.subtitle}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Pause overlay */}
           {isPaused && (

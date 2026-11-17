@@ -240,6 +240,28 @@ export default function App() {
     socket.emit('play_again', { code: roomCode });
   };
 
+  const handleGoHome = () => {
+    sessionStorage.removeItem('sketchrelay_session');
+    setRoomCode('');
+    setResultData(null);
+    setGameState({
+      status: 'waiting',
+      prompt: '',
+      promptSteps: [],
+      currentStep: '',
+      currentTurn: 1,
+      totalTurns: 6,
+      timeLeft: 40,
+      isPaused: false,
+      pauseReason: null,
+      activeSlot: 1,
+      players: { 1: null, 2: null },
+      canvasHistory: [],
+      chatMessages: []
+    });
+    setScreen('lobby');
+  };
+
   return (
     <div className="w-full h-full flex flex-col overflow-hidden relative font-cute select-none">
       {screen === 'lobby' && (
@@ -266,6 +288,7 @@ export default function App() {
         <ResultsScreen
           resultData={resultData}
           onPlayAgain={handlePlayAgain}
+          onGoHome={handleGoHome}
           isHost={mySlot === 1}
         />
       )}
