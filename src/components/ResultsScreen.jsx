@@ -118,7 +118,7 @@ export default function ResultsScreen({ resultData, onPlayAgain, onGoHome, isHos
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-between p-4 safe-top safe-bottom bg-[#0d0e15] text-slate-100 overflow-hidden select-none">
+    <div className="w-full h-full flex flex-col justify-between p-4 safe-top safe-bottom bg-transparent text-slate-100 overflow-hidden select-none">
       {/* Header */}
       <div className="text-center pt-1">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 font-semibold text-xs border border-rose-500/20 mb-1">

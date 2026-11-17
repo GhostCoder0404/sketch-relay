@@ -353,7 +353,7 @@ export default function GameScreen({
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-between safe-top safe-bottom relative overflow-hidden select-none bg-[#0d0e15] text-slate-100">
+    <div className="w-full h-full flex flex-col justify-between safe-top safe-bottom relative overflow-hidden select-none bg-transparent text-slate-100">
       {/* ===== TOP BAR ===== */}
       <header className="w-full px-3 pt-1.5 pb-1.5 flex flex-col gap-1.5 shrink-0 z-10 border-b border-slate-800/80 bg-[#12141f]/95 backdrop-blur-md">
         {/* Row 1: Status & Turns Progress & Timer */}

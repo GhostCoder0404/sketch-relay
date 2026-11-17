@@ -96,10 +96,10 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-between p-4 safe-top safe-bottom relative overflow-hidden select-none bg-[#0d0e15] text-slate-100">
+    <div className="w-full h-full flex flex-col items-center justify-between p-4 safe-top safe-bottom relative overflow-hidden select-none bg-transparent text-slate-100">
       {/* Top Header */}
       <header className="w-full flex items-center justify-between pt-1 pb-2 max-w-sm mx-auto">
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161824] border border-slate-800 text-xs text-slate-400 font-medium">
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161824]/80 backdrop-blur-md border border-slate-800 text-xs text-slate-400 font-medium shadow-sm">
           <Wifi className={`w-3.5 h-3.5 ${ping < 100 ? 'text-emerald-400' : 'text-amber-400'}`} />
           <span>{ping > 0 ? `${ping}ms` : 'Connected'}</span>
         </div>
@@ -110,8 +110,12 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
         {/* Logo & Headline */}
         <div className="text-center mb-6">
           <div className="relative inline-flex items-center justify-center mb-3">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-600 via-pink-600 to-purple-600 flex items-center justify-center rose-glow">
-              <Palette className="w-7 h-7 text-white" />
+            <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-rose-500/50 shadow-xl rose-glow p-0.5 bg-[#181b28]">
+              <img
+                src="/icon.jpg"
+                alt="Sketch Relay"
+                className="w-full h-full object-cover rounded-xl"
+              />
             </div>
             <Heart className="w-4 h-4 fill-rose-400 text-rose-400 absolute -top-1 -right-1 animate-heartbeat" />
           </div>
