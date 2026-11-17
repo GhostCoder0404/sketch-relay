@@ -83,7 +83,7 @@ html, body {
 }
 
 /* Buttons */
-.btn-couple-primary {
+.btn-rose, .btn-couple-primary {
   background: linear-gradient(135deg, #f43f5e 0%, #e11d48 50%, #ec4899 100%);
   color: #ffffff;
   font-weight: 700;
@@ -97,12 +97,30 @@ html, body {
   border: none;
   box-shadow: 0 4px 16px rgba(244, 63, 94, 0.4);
 }
-.btn-couple-primary:hover:not(:disabled) {
+.btn-rose:hover:not(:disabled), .btn-couple-primary:hover:not(:disabled) {
   box-shadow: 0 6px 20px rgba(244, 63, 94, 0.55);
   transform: translateY(-1px);
 }
-.btn-couple-primary:active:not(:disabled) {
+.btn-rose:active:not(:disabled), .btn-couple-primary:active:not(:disabled) {
   transform: scale(0.97);
+}
+
+/* Inputs - Crisp white background with bold black typed text */
+.input-dark, input[type="text"], input[type="email"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  caret-color: #f43f5e !important;
+  border: 1.5px solid rgba(244, 63, 94, 0.4) !important;
+  border-radius: 12px;
+  outline: none;
+}
+.input-dark:focus, input[type="text"]:focus, input[type="email"]:focus {
+  border-color: #f43f5e !important;
+  box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25) !important;
+}
+.input-dark::placeholder, input::placeholder {
+  color: #64748b !important;
+  opacity: 0.8;
 }
 
 .btn-couple-secondary {

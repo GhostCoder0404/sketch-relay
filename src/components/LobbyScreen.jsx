@@ -202,7 +202,7 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
                     value={myNickname}
                     onChange={(e) => setMyNickname(e.target.value)}
                     placeholder="e.g. Sweetie, Alex..."
-                    className="w-full px-3 py-2 rounded-xl border border-slate-700 bg-[#10121a] text-white focus:outline-none focus:border-rose-500 text-sm font-medium transition"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-700 bg-white text-black font-semibold placeholder:text-slate-500 focus:outline-none focus:border-rose-500 text-sm transition"
                   />
                 </div>
 
@@ -216,7 +216,7 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
                     value={partnerNickname}
                     onChange={(e) => setPartnerNickname(e.target.value)}
                     placeholder="e.g. Honey, Sam..."
-                    className="w-full px-3 py-2 rounded-xl border border-slate-700 bg-[#10121a] text-white focus:outline-none focus:border-rose-500 text-sm font-medium transition"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-700 bg-white text-black font-semibold placeholder:text-slate-500 focus:outline-none focus:border-rose-500 text-sm transition"
                   />
                 </div>
 
@@ -241,7 +241,7 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
                     value={joinCode}
                     onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                     placeholder="e.g. SKETCH-42"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-700 bg-[#10121a] text-rose-400 font-mono font-bold text-center text-base uppercase focus:outline-none focus:border-rose-500 transition"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-700 bg-white text-black font-mono font-bold text-center text-base uppercase focus:outline-none focus:border-rose-500 transition"
                   />
                 </div>
 
@@ -255,7 +255,7 @@ export default function LobbyScreen({ socket, onRoomReady, ping }) {
                     value={myNickname}
                     onChange={(e) => setMyNickname(e.target.value)}
                     placeholder="e.g. Honey, Sam..."
-                    className="w-full px-3 py-2 rounded-xl border border-slate-700 bg-[#10121a] text-white focus:outline-none focus:border-rose-500 text-sm font-medium transition"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-700 bg-white text-black font-semibold placeholder:text-slate-500 focus:outline-none focus:border-rose-500 text-sm transition"
                   />
                 </div>
 

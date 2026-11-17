@@ -243,11 +243,11 @@ export default function CoupleAuthScreen({ onAuthenticated }) {
               </label>
               <input
                 type="text"
-                placeholder="e.g. Diya"
+                placeholder="e.g. Jeni"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 maxLength={24}
-                className="input-dark w-full px-3 py-2 text-sm"
+                className="input-dark w-full px-3 py-2 text-sm bg-white text-black font-semibold placeholder:text-slate-500 shadow-sm"
                 required
               />
             </div>
@@ -262,7 +262,7 @@ export default function CoupleAuthScreen({ onAuthenticated }) {
                 placeholder="you@love.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input-dark w-full px-3 py-2 text-sm"
+                className="input-dark w-full px-3 py-2 text-sm bg-white text-black font-semibold placeholder:text-slate-500 shadow-sm"
                 required
               />
             </div>
@@ -324,7 +324,7 @@ export default function CoupleAuthScreen({ onAuthenticated }) {
                 value={inputCode}
                 onChange={(e) => setInputCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 maxLength={6}
-                className="input-dark w-full px-3 py-2.5 text-center text-lg font-mono tracking-widest"
+                className="input-dark w-full px-3 py-2.5 text-center text-lg font-mono tracking-widest bg-white text-black font-bold placeholder:text-slate-400 shadow-sm"
                 required
               />
             </div>
@@ -477,7 +477,7 @@ export default function CoupleAuthScreen({ onAuthenticated }) {
                 placeholder="LOVE-XXXX"
                 value={partnerPairCode}
                 onChange={(e) => setPartnerPairCode(e.target.value.toUpperCase())}
-                className="input-dark w-full px-3 py-2.5 text-center text-lg font-mono tracking-wider uppercase font-bold"
+                className="input-dark w-full px-3 py-2.5 text-center text-lg font-mono tracking-wider uppercase font-extrabold bg-white text-black placeholder:text-slate-400 shadow-sm"
                 required
               />
             </div>

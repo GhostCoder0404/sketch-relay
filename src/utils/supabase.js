@@ -131,6 +131,20 @@ export async function saveDrawingToCloud(coupleId, prompt, dataUrl) {
   try {
     if (!coupleId || !dataUrl) return null;
 
+    // 0. Double-save protection: Check if a drawing with this prompt was already saved in the last 30s
+    const thirtySecAgo = new Date(Date.now() - 30000).toISOString();
+    const { data: recentDuplicates } = await supabase
+      .from('drawings')
+      .select('id, image_url')
+      .eq('couple_id', coupleId)
+      .eq('prompt', prompt || 'Couple Sketch')
+      .gte('created_at', thirtySecAgo)
+      .limit(1);
+
+    if (recentDuplicates && recentDuplicates.length > 0) {
+      return recentDuplicates[0];
+    }
+
     // Convert dataUrl to Blob
     const res = await fetch(dataUrl);
     const blob = await res.blob();

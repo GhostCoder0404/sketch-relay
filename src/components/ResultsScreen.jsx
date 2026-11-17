@@ -58,8 +58,8 @@ export default function ResultsScreen({ resultData, onPlayAgain, onGoHome, isHos
         }
       });
 
-      // Automatically save finished artwork to couple scrapbook in cloud
-      if (canvasRef.current && coupleId && !hasSavedRef.current) {
+      // Automatically save finished artwork to couple scrapbook in cloud (Host saves once)
+      if (canvasRef.current && coupleId && isHost && !hasSavedRef.current) {
         hasSavedRef.current = true;
         try {
           const dataUrl = canvasRef.current.toDataURL('image/png');
@@ -69,9 +69,11 @@ export default function ResultsScreen({ resultData, onPlayAgain, onGoHome, isHos
         } catch (e) {
           console.error('Failed to auto-save to cloud:', e);
         }
+      } else if (canvasRef.current && coupleId && !isHost) {
+        setIsSavedToCloud(true);
       }
     }
-  }, [canvasHistory, coupleId, prompt]);
+  }, [canvasHistory, coupleId, prompt, isHost]);
 
   const handleDownload = () => {
     if (!canvasRef.current) return;
